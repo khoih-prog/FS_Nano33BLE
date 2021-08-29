@@ -1,0 +1,22 @@
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+FileSystem_MBED	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+init KEYWORD2
+mount KEYWORD2
+unmount	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+NANO33BLE_FLASH_SIZE    LITERAL1
+NANO33BLE_FS_SIZE_KB    LITERAL1
+
+FS_MARK   LITERAL1

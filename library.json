@@ -1,0 +1,29 @@
+{
+  "name": "FS_Nano33BLE",
+  "version": "1.0.0",
+  "keywords": "storage, data-storage, littlefs, littlefs-mbed, fatfs, fatfs-mbed, flash, flash-storage, posix, file-system, file, mbed, nano-33-ble, nano-33-ble-sense, nrf52840",
+  "description": "This library facilitates your usage of FS (FATFS or LittleFS) for the onboard flash. FS supports power fail safety and high performance",
+  "authors":
+  {
+    "name":  "Khoi Hoang",
+    "url":   "https://github.com/khoih-prog",
+    "maintainer": true
+  },
+  "repository":
+  {
+    "type": "git",
+    "url": "//https://github.com/khoih-prog/FS_Nano33BLE"
+  },
+  "homepage": "https://github.com/khoih-prog/FS_Nano33BLE",
+  "export": {
+    "exclude": [
+      "linux",
+      "extras",
+      "tests"
+    ]
+  },
+  "frameworks": "*",
+  "platforms": ["mbed", "nrf52"],
+  "examples": "examples/*/*/*.ino",
+  "license": "GPL-3.0-or-later"
+}
