@@ -14,8 +14,8 @@ If you don't find anything, please [open a new issue](https://github.com/khoih-p
 
 Please ensure to specify the following:
 
-* Arduino IDE version (e.g. 1.8.15) or Platform.io version
-* `Arduino mbed_nano` Core Version (e.g. Arduino mbed_nano core v2.4.1)
+* Arduino IDE version (e.g. 1.8.19) or Platform.io version
+* `Arduino mbed_nano` Core Version (e.g. Arduino mbed_nano core v2.6.1)
 * `nRF52840-based Nano_33_BLE` Board type (e.g. Nano_33_BLE, Nano_33_BLE_Sense, etc.)
 * Contextual information (e.g. what you were trying to achieve)
 * Simplest possible steps to reproduce
@@ -27,11 +27,11 @@ Please ensure to specify the following:
 ### Example
 
 ```
-Arduino IDE version: 1.8.15
-Arduino mbed_nano core v2.4.1
+Arduino IDE version: 1.8.19
+Arduino mbed_nano core v2.6.1
 Nano_33_BLE board
 OS: Ubuntu 20.04 LTS
-Linux xy-Inspiron-3593 5.4.0-81-generic #91-Ubuntu SMP Thu Jul 15 19:09:17 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+Linux xy-Inspiron-3593 5.4.0-91-generic #102-Ubuntu SMP Fri Nov 5 16:31:28 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
 
 Context:
 I encountered a crash while using TimerInterrupt.

@@ -14,14 +14,12 @@
 * [Why do we need this FS_Nano33BLE library](#why-do-we-need-this-FS_Nano33BLE-library)
   * [Features](#features)
   * [Currently supported Boards](#currently-supported-boards)
-* [Changelog](#changelog)
-  * [Initial Releases v1.0.0](#initial-releases-v100)
+* [Changelog](changelog.md)
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
   * [Use Arduino Library Manager](#use-arduino-library-manager)
   * [Manual Install](#manual-install)
   * [VS Code & PlatformIO](#vs-code--platformio)
-* [HOWTO Fix `Multiple Definitions` Linker Error](#howto-fix-multiple-definitions-linker-error)
 * [Examples](#examples)
   * [  1. FS_Counting](examples/FS_Counting)
   * [  2. FS_Test](examples/FS_Test)
@@ -32,7 +30,6 @@
   * [3. FS_Test on Nano 33 BLE with FATFS size 256KB](#3-fs_test-on-nano-33-ble-with-fatfs-size-256kb)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
-* [Releases](#releases)
 * [Issues](#issues)
 * [TO DO](#to-do)
 * [DONE](#done)
@@ -61,20 +58,10 @@ The filesystem access uses normal [POSIX APIs](https://www.tutorialspoint.com/c_
 ---
 ---
 
-## Changelog
-
-### Initial Releases v1.0.0
-
-1. Initial coding to support MBED nRF52840-based boards such as **Nano_33_BLE, Nano_33_BLE_Sense**, etc. using [**Arduino-mbed mbed_nano** core](https://github.com/arduino/ArduinoCore-mbed)
-
-
----
----
-
 ## Prerequisites
 
-1. [`Arduino IDE 1.8.15+` for Arduino](https://www.arduino.cc/en/Main/Software)
-2. [`Arduino mbed_nano core 2.4.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) MBED nRF52840-based boards such as **Nano_33_BLE, Nano_33_BLE_Sense**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+1. [`Arduino IDE 1.8.19+` for Arduino](https://www.arduino.cc/en/Main/Software)
+2. [`Arduino mbed_nano core 2.6.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) MBED nRF52840-based boards such as **Nano_33_BLE, Nano_33_BLE_Sense**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
 
 ---
 ---
@@ -107,31 +94,6 @@ Another way to install is to:
 ---
 
 
-### HOWTO Fix `Multiple Definitions` Linker Error
-
-The current library implementation, using **xyz-Impl.h instead of standard xyz.cpp**, possibly creates certain `Multiple Definitions` Linker error in certain use cases. Although it's simple to just modify several lines of code, either in the library or in the application, the library is adding 2 more source directories
-
-1. **scr_h** for new h-only files
-2. **src_cpp** for standard h/cpp files
-
-besides the standard **src** directory.
-
-To use the **old standard cpp** way, locate this library' directory, then just 
-
-1. **Delete the all the files in src directory.**
-2. **Copy all the files in src_cpp directory into src.**
-3. Close then reopen the application code in Arduino IDE, etc. to recompile from scratch.
-
-To re-use the **new h-only** way, just 
-
-1. **Delete the all the files in src directory.**
-2. **Copy the files in src_h directory into src.**
-3. Close then reopen the application code in Arduino IDE, etc. to recompile from scratch.
-
----
----
-
-
 ### Examples 
 
  1. [FS_Counting](examples/FS_Counting)
@@ -143,6 +105,9 @@ To re-use the **new h-only** way, just
 ### Example [FS_Test](examples/FS_Test)
 
 ```
+#define FS_NANO33BLE_VERSION_MIN_TARGET      "FS_Nano33BLE v1.1.0"
+#define FS_NANO33BLE_VERSION_MIN             1001000
+
 #define _FS_LOGLEVEL_               1
 #define NANO33BLE_FS_SIZE_KB        256
 
@@ -418,6 +383,14 @@ void setup()
   Serial.print("\nStart FS_Test on "); Serial.println(BOARD_NAME);
   Serial.println(FS_NANO33BLE_VERSION);
 
+#if defined(FS_NANO33BLE_VERSION_MIN)
+  if (FS_NANO33BLE_VERSION_INT < FS_NANO33BLE_VERSION_MIN)
+  {
+    Serial.print("Warning. Must use this example on Version equal or later than : ");
+    Serial.println(FS_NANO33BLE_VERSION_MIN_TARGET);
+  }
+#endif
+
   myFS = new FileSystem_MBED();
 
   if (!myFS->init())
@@ -480,7 +453,7 @@ The following is the sample terminal output when running example [FS_Counting](e
 
 ```
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.0.0
+LittleFS_Nano33BLE v1.1.0
 [LFS] LittleFS size (KB) = 256
 [LFS] LittleFS Mount OK
 Deleting file: /littlefs/counts.txt => OK
@@ -488,7 +461,7 @@ Times have been run = 1
  => Open to write OK
 
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.0.0
+LittleFS_Nano33BLE v1.1.0
 [LFS] LittleFS size (KB) = 256
 [LFS] LittleFS Mount OK
  => Open to read OK
@@ -496,7 +469,7 @@ Times have been run = 2
  => Open to write OK
 
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.0.0
+LittleFS_Nano33BLE v1.1.0
 [LFS] LittleFS size (KB) = 256
 [LFS] LittleFS Mount OK
  => Open to read OK
@@ -513,7 +486,7 @@ The following is the sample terminal output when running example [FS_Test](examp
 
 ```
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.0.0
+LittleFS_Nano33BLE v1.1.0
 [LFS] LittleFS size (KB) = 256
 [LFS] LittleFS Mount Fail
 [LFS] Formatting... 
@@ -579,7 +552,7 @@ The following is the sample terminal output when running example [FS_Test](examp
 
 ```
 Start FS_Test on Nano 33 BLE
-FATFS_Nano33BLE v1.0.0
+FATFS_Nano33BLE v1.1.0
 [LFS] FATFS size (KB) = 256
 [LFS] FATFS Mount OK
 ====================================================
@@ -661,14 +634,6 @@ Sometimes, the library will only work if you update the board core to the latest
 ---
 ---
 
-## Releases
-
-### Initial Releases v1.0.0
-
-1. Initial coding to support MBED nRF52840-based boards such as **Nano_33_BLE, Nano_33_BLE_Sense**, etc. using [**Arduino-mbed mbed_nano** core](https://github.com/arduino/ArduinoCore-mbed)
-
----
----
 
 ### Issues
 
@@ -688,6 +653,7 @@ Submit issues to: [FS_Nano33BLE issues](https://github.com/khoih-prog/FS_Nano33B
 1. Basic LittleFS wrapper for MBED nRF52840-based boards such as **Nano_33_BLE, Nano_33_BLE_Sense**, using [**Arduino-mbed mbed_nano** core](https://github.com/arduino/ArduinoCore-mbed)
 2. Add Version String 
 3. Add Table of Contents
+4. Fix `multiple-definitions` linker error
 
 ---
 ---

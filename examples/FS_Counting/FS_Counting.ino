@@ -14,6 +14,9 @@
   1.0.0   K Hoang      29/08/2021 Initial coding to support MBED nRF52840-based boards such as Nano_33_BLE, etc.
 *****************************************************************************************************************************/
 
+#define FS_NANO33BLE_VERSION_MIN_TARGET      "FS_Nano33BLE v1.1.0"
+#define FS_NANO33BLE_VERSION_MIN             1001000
+
 #define _FS_LOGLEVEL_               1
 #define NANO33BLE_FS_SIZE_KB        256
 
@@ -37,6 +40,14 @@ void setup()
 
   Serial.print("\nStart FS_Counting on "); Serial.println(BOARD_NAME);
   Serial.println(FS_NANO33BLE_VERSION);
+
+#if defined(FS_NANO33BLE_VERSION_MIN)
+  if (FS_NANO33BLE_VERSION_INT < FS_NANO33BLE_VERSION_MIN)
+  {
+    Serial.print("Warning. Must use this example on Version equal or later than : ");
+    Serial.println(FS_NANO33BLE_VERSION_MIN_TARGET);
+  }
+#endif
 
   myFS = new FileSystem_MBED();
 

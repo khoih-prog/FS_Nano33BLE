@@ -52,9 +52,13 @@
 
 ////////////////////////////////////////////////
 
-#ifndef FS_NANO33BLE_VERSION
-  #define FS_NANO33BLE_VERSION       FS_NAME "_Nano33BLE v1.0.0"
-#endif
+#define FS_NANO33BLE_VERSION              FS_NAME "_Nano33BLE v1.1.0"
+
+#define FS_NANO33BLE_VERSION_MAJOR        1
+#define FS_NANO33BLE_VERSION_MINOR        1
+#define FS_NANO33BLE_VERSION_PATCH        0
+
+#define FS_NANO33BLE_VERSION_INT          1001000
 
 ////////////////////////////////////////////////
 
@@ -169,9 +173,118 @@ public:
     }
   }
   
-  bool init();
-  bool mount();
-  bool unmount();
+  ////////////////////////////////////////////////
+
+  bool init()
+  {
+    FS_LOGERROR1(FS_NAME " size (KB) = ", NANO33BLE_FS_SIZE_KB);
+    
+  #if FORCE_REFORMAT
+    int error;
+    
+  #if USING_LITTLEFS
+    error = mbed::LittleFileSystem::format(&bd);
+  #else  
+    error = mbed::FATFileSystem::format(&bd);
+  #endif
+
+    if (error)
+    {
+      FS_LOGERROR1("FS Format error, errno = ", errno);
+     
+      return false;
+    }
+
+  #endif
+
+    return mount();
+  }
+  
+  ////////////////////////////////////////////////
+
+  bool mount()
+  {
+    if (!_mounted)
+    {   
+      int error;
+      
+      // 0 => OK
+      _mounted = (fs.mount(&bd) == 0);
+
+      FS_LOGERROR(_mounted ? FS_NAME " Mount OK" : FS_NAME " Mount Fail");
+
+      if (!_mounted)
+      {
+        // Reformat if we can't mount the filesystem
+        FS_LOGERROR("Formatting... ");
+
+  #if USING_LITTLEFS
+        error = mbed::LittleFileSystem::format(&bd);
+  #else  
+        error = mbed::FATFileSystem::format(&bd);
+  #endif
+
+        if (!error)
+        {
+          FS_LOGERROR("FS Format OK. Mounting");
+
+          _mounted = (fs.mount(&bd) == 0);
+                 
+          if (_mounted)
+          {
+            FS_LOGERROR("FS OK");
+            
+            return true;
+          }
+          else
+          {
+            FS_LOGERROR("FS error. Reset. It'll be OK now after reset.");
+            
+            // Restart for nRF52
+            NVIC_SystemReset();
+            
+            return false;
+          }
+        }
+        else
+        {
+          FS_LOGERROR("FS Format error");
+          
+          return false;
+        }
+      }
+
+      if (!_mounted)
+      {
+        FS_LOGERROR("FS error");
+      } 
+    }
+    
+    return true;
+  }
+  
+  ////////////////////////////////////////////////
+
+  bool unmount()
+  {
+    if (_mounted)
+    {
+      int err = fs.unmount();
+    
+      FS_LOGERROR1("Unmount FS ", err < 0 ? "Fail" : "OK");
+   
+      if (err < 0)
+      {   
+        return false;
+      }
+    }
+    
+    _mounted = false;
+    
+    return true;
+  }
+  
+  ////////////////////////////////////////////////
   
 private:
 
@@ -180,6 +293,5 @@ private:
   bool     _mounted;  
 };
 
-#include "FS_Nano33BLE.hpp"
 
 #endif // ifndef _FS_NANO33BLE_H
