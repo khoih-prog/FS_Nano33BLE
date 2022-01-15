@@ -7,11 +7,13 @@
   Built by Khoi Hoang https://github.com/khoih-prog/FS_Nano33BLE
   Licensed under MIT license
 
-  Version: 1.0.0
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      29/08/2021 Initial coding to support MBED nRF52840-based boards such as Nano_33_BLE, etc.
+  1.1.0   K Hoang      31/12/2021 Fix `multiple-definitions` linker error
+  1.2.0   K Hoang      15/01/2022 Use correct NANO33BLE_FS_START address without wasting flash space 
 *****************************************************************************************************************************/
 
 #ifndef _FS_NANO33BLE_H
@@ -52,13 +54,13 @@
 
 ////////////////////////////////////////////////
 
-#define FS_NANO33BLE_VERSION              FS_NAME "_Nano33BLE v1.1.0"
+#define FS_NANO33BLE_VERSION              FS_NAME "_Nano33BLE v1.2.0"
 
 #define FS_NANO33BLE_VERSION_MAJOR        1
-#define FS_NANO33BLE_VERSION_MINOR        1
+#define FS_NANO33BLE_VERSION_MINOR        2
 #define FS_NANO33BLE_VERSION_PATCH        0
 
-#define FS_NANO33BLE_VERSION_INT          1001000
+#define FS_NANO33BLE_VERSION_INT          1002000
 
 ////////////////////////////////////////////////
 
@@ -122,9 +124,20 @@
   #else
     #warning Using NANO33BLE_FS_SIZE_KB defined in external code 
     
+    // KH, New from v1.2.0
     #if (NANO33BLE_FS_SIZE_KB > (NANO33BLE_FLASH_SIZE / (2 * 1024)))
-      #error FlashSize too large. Max is (NANO33BLE_FLASH_SIZE / 2) = 512KB
+      #warning FlashSize too large. Adjust to 512KB
+      
+      #undef NANO33BLE_FS_SIZE_KB
+      #define NANO33BLE_FS_SIZE_KB        (512)
+         
+    #elif (NANO33BLE_FS_SIZE_KB < 64)
+      #warning FlashSize too small. Adjust to 64KB
+      
+      #undef NANO33BLE_FS_SIZE_KB
+      #define NANO33BLE_FS_SIZE_KB        (64)
     #endif
+    //
   #endif
 
   #if !defined(NANO33BLE_FS_START)
@@ -148,12 +161,28 @@
 
 #if USING_LITTLEFS
   static mbed::LittleFileSystem fs(MBED_FS_FILE_NAME);
-  static FlashIAPBlockDevice wholeBD(FLASH_BASE, 0x80000);
-  static FlashIAPBlockDevice bd(FLASH_BASE, (NANO33BLE_FS_SIZE_KB * 1024));
+ 
+  // KH, New from v1.2.0
+  static FlashIAPBlockDevice bd(NANO33BLE_FS_START, (NANO33BLE_FS_SIZE_KB * 1024));
+  //////
 #elif USING_FATFS
   static mbed::FATFileSystem fs(MBED_FS_FILE_NAME);
-  static FlashIAPBlockDevice bd(FLASH_BASE, NANO33BLE_FLASH_SIZE / 2);
-  //static FlashIAPBlockDevice bd(FLASH_BASE, (NANO33BLE_FS_SIZE_KB * 1024));   // Crash ??
+ 
+  #if (NANO33BLE_FS_SIZE_KB != 512)
+    #warning Auto-adjust FATFS size to 512KB or crash
+        
+    #undef NANO33BLE_FS_SIZE_KB
+    #define NANO33BLE_FS_SIZE_KB        (512)
+  #endif
+  
+  // KH, Note for v1.2.0
+  // Don't use FATFS now or to use only with 512KB
+  //static FlashIAPBlockDevice bd(NANO33BLE_FS_START, (NANO33BLE_FS_SIZE_KB * 1024));   // Still Crash, issue with the core ??
+  //static FlashIAPBlockDevice bd(FLASH_BASE, (NANO33BLE_FS_SIZE_KB * 1024));           // Still Crash, issue with the core ??
+  
+  static FlashIAPBlockDevice bd(FLASH_BASE, (NANO33BLE_FS_SIZE_KB * 1024));
+  //static FlashIAPBlockDevice bd(FLASH_BASE, NANO33BLE_FLASH_SIZE / 2);
+  //////
 #endif  
 
 class FileSystem_MBED

@@ -7,11 +7,13 @@
   Built by Khoi Hoang https://github.com/khoih-prog/FS_Nano33BLE
   Licensed under MIT license
 
-  Version: 1.0.0
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      29/08/2021 Initial coding to support MBED nRF52840-based boards such as Nano_33_BLE, etc.
+  1.1.0   K Hoang      31/12/2021 Fix `multiple-definitions` linker error
+  1.2.0   K Hoang      15/01/2022 Use correct NANO33BLE_FS_START address without wasting flash space 
 *****************************************************************************************************************************/  
 
 #ifndef FS_NANO33BLE_Debug_h

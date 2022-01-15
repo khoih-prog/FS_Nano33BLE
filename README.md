@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Why do we need this FS_Nano33BLE library](#why-do-we-need-this-FS_Nano33BLE-library)
+  * [Important Notes](#Important-Notes)
   * [Features](#features)
   * [Currently supported Boards](#currently-supported-boards)
 * [Changelog](changelog.md)
@@ -43,6 +44,11 @@
 
 ### Why do we need this [FS_Nano33BLE library](https://github.com/khoih-prog/FS_Nano33BLE)
 
+## Important Notes
+
+Avoid using FATFS because the somehow (issue with the core ???) it's OK to use only with 512KB. Please use the better LittleFS, where you can select the size anywhere from 64KB to 512KB.
+
+
 ## Features
 
 This library is just a simple LittleFS wrapper to facilitate your usage of LittleFS for the onboard flash on **MBED nRF52840-based boards such as Nano_33_BLE, Nano_33_BLE_Sense**, using [**Arduino-mbed mbed_nano** core](https://github.com/arduino/ArduinoCore-mbed)
@@ -60,7 +66,7 @@ The filesystem access uses normal [POSIX APIs](https://www.tutorialspoint.com/c_
 
 ## Prerequisites
 
-1. [`Arduino IDE 1.8.19+` for Arduino](https://www.arduino.cc/en/Main/Software)
+1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
 2. [`Arduino mbed_nano core 2.6.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) MBED nRF52840-based boards such as **Nano_33_BLE, Nano_33_BLE_Sense**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
 
 ---
@@ -105,11 +111,14 @@ Another way to install is to:
 ### Example [FS_Test](examples/FS_Test)
 
 ```
-#define FS_NANO33BLE_VERSION_MIN_TARGET      "FS_Nano33BLE v1.1.0"
-#define FS_NANO33BLE_VERSION_MIN             1001000
+#define FS_NANO33BLE_VERSION_MIN_TARGET      "FS_Nano33BLE v1.2.0"
+#define FS_NANO33BLE_VERSION_MIN             1002000
 
 #define _FS_LOGLEVEL_               1
-#define NANO33BLE_FS_SIZE_KB        256
+
+// Min NANO33BLE_FS_SIZE_KB must be  64KB. If defined smalller => auto adjust to  64KB
+// Max NANO33BLE_FS_SIZE_KB must be 512KB. If defined larger   => auto adjust to 512KB
+#define NANO33BLE_FS_SIZE_KB        64
 
 #define FORCE_REFORMAT              false
 
@@ -391,6 +400,9 @@ void setup()
   }
 #endif
 
+  Serial.print("FS_size (KB) = "); Serial.println(NANO33BLE_FS_SIZE_KB);
+  Serial.print("FS_ Start Address = 0x"); Serial.println(NANO33BLE_FS_START, HEX);
+
   myFS = new FileSystem_MBED();
 
   if (!myFS->init())
@@ -453,15 +465,17 @@ The following is the sample terminal output when running example [FS_Counting](e
 
 ```
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.1.0
-[LFS] LittleFS size (KB) = 256
+LittleFS_Nano33BLE v1.2.0
+FS_size (KB) = 256
+FS_ Start Address = 0xC0000
+[FS] LittleFS size (KB) = 256
 [LFS] LittleFS Mount OK
 Deleting file: /littlefs/counts.txt => OK
 Times have been run = 1
  => Open to write OK
 
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.1.0
+LittleFS_Nano33BLE v1.2.0
 [LFS] LittleFS size (KB) = 256
 [LFS] LittleFS Mount OK
  => Open to read OK
@@ -469,7 +483,7 @@ Times have been run = 2
  => Open to write OK
 
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.1.0
+LittleFS_Nano33BLE v1.2.0
 [LFS] LittleFS size (KB) = 256
 [LFS] LittleFS Mount OK
  => Open to read OK
@@ -486,8 +500,10 @@ The following is the sample terminal output when running example [FS_Test](examp
 
 ```
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.1.0
-[LFS] LittleFS size (KB) = 256
+LittleFS_Nano33BLE v1.2.0
+FS_size (KB) = 256
+FS_ Start Address = 0xC0000
+[FS] LittleFS size (KB) = 256
 [LFS] LittleFS Mount Fail
 [LFS] Formatting... 
 [LFS] 
@@ -545,15 +561,17 @@ Test complete
 
 ---
 
-### 3. FS_Test on Nano 33 BLE with FATFS size 256KB
+### 3. FS_Test on Nano 33 BLE with FATFS size 512KB
 
 The following is the sample terminal output when running example [FS_Test](examples/FS_Test) on MBED Nano_33_BLE using **FATFS**
 
 
 ```
 Start FS_Test on Nano 33 BLE
-FATFS_Nano33BLE v1.1.0
-[LFS] FATFS size (KB) = 256
+FATFS_Nano33BLE v1.2.0
+FS_size (KB) = 512
+FS_ Start Address = 0x80000
+[FS] LittleFS size (KB) = 512
 [LFS] FATFS Mount OK
 ====================================================
 Writing file: /fs/hello1.txt => Open OK
@@ -654,6 +672,8 @@ Submit issues to: [FS_Nano33BLE issues](https://github.com/khoih-prog/FS_Nano33B
 2. Add Version String 
 3. Add Table of Contents
 4. Fix `multiple-definitions` linker error
+5. Use correct `NANO33BLE_FS_START` address for `LittleFS` without wasting flash space. Check [Half size of flash #2](https://github.com/khoih-prog/FS_Nano33BLE/discussions/2)
+
 
 ---
 ---
@@ -661,6 +681,14 @@ Submit issues to: [FS_Nano33BLE issues](https://github.com/khoih-prog/FS_Nano33B
 ### Contributions and Thanks
 
 Many thanks for everyone for bug reporting, new feature suggesting, testing and contributing to the development of this library.
+
+1. Thanks to [Rob Probin](https://github.com/robzed) to report issue [Half size of flash #2](https://github.com/khoih-prog/FS_Nano33BLE/discussions/2) leading to v1.2.0
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/robzed"><img src="https://github.com/robzed.png" width="100px;" alt="robzed"/><br /><sub><b>Rob Probin</b></sub></a><br /></td>
+  </tr> 
+</table>
 
 
 ---

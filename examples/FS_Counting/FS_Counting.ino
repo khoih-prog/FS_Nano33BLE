@@ -6,23 +6,21 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/FS_Nano33BLE
   Licensed under MIT license
-
-  Version: 1.0.0
-
-  Version Modified By   Date      Comments
-  ------- -----------  ---------- -----------
-  1.0.0   K Hoang      29/08/2021 Initial coding to support MBED nRF52840-based boards such as Nano_33_BLE, etc.
 *****************************************************************************************************************************/
 
-#define FS_NANO33BLE_VERSION_MIN_TARGET      "FS_Nano33BLE v1.1.0"
-#define FS_NANO33BLE_VERSION_MIN             1001000
+#define FS_NANO33BLE_VERSION_MIN_TARGET      "FS_Nano33BLE v1.2.0"
+#define FS_NANO33BLE_VERSION_MIN             1002000
 
 #define _FS_LOGLEVEL_               1
+
+// Min NANO33BLE_FS_SIZE_KB must be  64KB. If defined smalller => auto adjust to  64KB
+// Max NANO33BLE_FS_SIZE_KB must be 512KB. If defined larger   => auto adjust to 512KB
 #define NANO33BLE_FS_SIZE_KB        256
 
 #define FORCE_REFORMAT              false
 
-// Default USING_LITTLEFS. Uncomment to not USING_LITTLEFS => USING_FATFS. 
+// Default USING_LITTLEFS. Uncomment to not USING_LITTLEFS => USING_FATFS.
+// It's advisable not to use FATFS, as the NANO33BLE_FS_SIZE_KB must be auto-adjusted to 512KB
 //#define USING_LITTLEFS              false
 
 #include <FS_Nano33BLE.h>
@@ -48,6 +46,9 @@ void setup()
     Serial.println(FS_NANO33BLE_VERSION_MIN_TARGET);
   }
 #endif
+
+  Serial.print("FS_size (KB) = "); Serial.println(NANO33BLE_FS_SIZE_KB);
+  Serial.print("FS_ Start Address = 0x"); Serial.println(NANO33BLE_FS_START, HEX);
 
   myFS = new FileSystem_MBED();
 
