@@ -28,7 +28,7 @@
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
   * [1. FS_Counting on Nano 33 BLE with LittleFS size 256KB](#1-fs_counting-on-nano-33-ble-with-littlefs-size-256kb)
   * [2. FS_Test on Nano 33 BLE with LittleFS size 256KB](#2-fs_test-on-nano-33-ble-with-littlefs-size-256kb)
-  * [3. FS_Test on Nano 33 BLE with FATFS size 256KB](#3-fs_test-on-nano-33-ble-with-fatfs-size-256kb)
+  * [3. FS_Test on Nano 33 BLE with FATFS size 512KB](#3-fs_test-on-nano-33-ble-with-fatfs-size-512kb)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
 * [Issues](#issues)
