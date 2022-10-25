@@ -1,6 +1,6 @@
 {
   "name": "FS_Nano33BLE",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "keywords": "storage, data-storage, littlefs, littlefs-mbed, fatfs, fatfs-mbed, flash, flash-storage, posix, file-system, file, mbed, nano-33-ble, nano-33-ble-sense, nrf52840",
   "description": "This library facilitates your usage of FS (FATFS or LittleFS) for the onboard flash. FS supports power fail safety and high performance",
   "authors":

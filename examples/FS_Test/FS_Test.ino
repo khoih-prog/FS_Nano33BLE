@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
   FS_Test.ino - Filesystem wrapper for FS (LittleFS and FATFS) on the Mbed Nano-33-BLE
-  
+
   For MBED nRF52840-based boards such as Nano_33_BLE, Nano_33_BLE_Sense.
   Written by Khoi Hoang
 
@@ -8,8 +8,8 @@
   Licensed under MIT license
 *****************************************************************************************************************************/
 
-#define FS_NANO33BLE_VERSION_MIN_TARGET      "FS_Nano33BLE v1.2.0"
-#define FS_NANO33BLE_VERSION_MIN             1002000
+#define FS_NANO33BLE_VERSION_MIN_TARGET      "FS_Nano33BLE v1.2.1"
+#define FS_NANO33BLE_VERSION_MIN             1002001
 
 #define _FS_LOGLEVEL_               1
 
@@ -27,13 +27,14 @@
 
 FileSystem_MBED *myFS;
 
-void readCharsFromFile(const char * path) 
+void readCharsFromFile(const char * path)
 {
-  Serial.print("readCharsFromFile: "); Serial.print(path);
+  Serial.print("readCharsFromFile: ");
+  Serial.print(path);
 
   FILE *file = fopen(path, "r");
-  
-  if (file) 
+
+  if (file)
   {
     Serial.println(" => Open OK");
   }
@@ -45,28 +46,29 @@ void readCharsFromFile(const char * path)
 
   char c;
 
-  while (true) 
+  while (true)
   {
     c = fgetc(file);
-    
-    if ( feof(file) ) 
-    { 
+
+    if ( feof(file) )
+    {
       break;
     }
-    else   
+    else
       Serial.print(c);
   }
-   
+
   fclose(file);
 }
 
-void readFile(const char * path) 
+void readFile(const char * path)
 {
-  Serial.print("Reading file: "); Serial.print(path);
+  Serial.print("Reading file: ");
+  Serial.print(path);
 
   FILE *file = fopen(path, "r");
-  
-  if (file) 
+
+  if (file)
   {
     Serial.println(" => Open OK");
   }
@@ -78,25 +80,26 @@ void readFile(const char * path)
 
   char c;
   uint32_t numRead = 1;
-  
-  while (numRead) 
+
+  while (numRead)
   {
     numRead = fread((uint8_t *) &c, sizeof(c), 1, file);
 
     if (numRead)
       Serial.print(c);
   }
-  
+
   fclose(file);
 }
 
-void writeFile(const char * path, const char * message, size_t messageSize) 
+void writeFile(const char * path, const char * message, size_t messageSize)
 {
-  Serial.print("Writing file: "); Serial.print(path);
+  Serial.print("Writing file: ");
+  Serial.print(path);
 
   FILE *file = fopen(path, "w");
-  
-  if (file) 
+
+  if (file)
   {
     Serial.println(" => Open OK");
   }
@@ -105,26 +108,27 @@ void writeFile(const char * path, const char * message, size_t messageSize)
     Serial.println(" => Open Failed");
     return;
   }
- 
-  if (fwrite((uint8_t *) message, 1, messageSize, file)) 
+
+  if (fwrite((uint8_t *) message, 1, messageSize, file))
   {
     Serial.println("* Writing OK");
-  } 
-  else 
+  }
+  else
   {
     Serial.println("* Writing failed");
   }
-  
+
   fclose(file);
 }
 
-void appendFile(const char * path, const char * message, size_t messageSize) 
+void appendFile(const char * path, const char * message, size_t messageSize)
 {
-  Serial.print("Appending file: "); Serial.print(path);
+  Serial.print("Appending file: ");
+  Serial.print(path);
 
   FILE *file = fopen(path, "a");
-  
-  if (file) 
+
+  if (file)
   {
     Serial.println(" => Open OK");
   }
@@ -134,23 +138,24 @@ void appendFile(const char * path, const char * message, size_t messageSize)
     return;
   }
 
-  if (fwrite((uint8_t *) message, 1, messageSize, file)) 
+  if (fwrite((uint8_t *) message, 1, messageSize, file))
   {
     Serial.println("* Appending OK");
-  } 
-  else 
+  }
+  else
   {
     Serial.println("* Appending failed");
   }
-   
+
   fclose(file);
 }
 
-void deleteFile(const char * path) 
+void deleteFile(const char * path)
 {
-  Serial.print("Deleting file: "); Serial.print(path);
-  
-  if (remove(path) == 0) 
+  Serial.print("Deleting file: ");
+  Serial.print(path);
+
+  if (remove(path) == 0)
   {
     Serial.println(" => OK");
   }
@@ -161,12 +166,14 @@ void deleteFile(const char * path)
   }
 }
 
-void renameFile(const char * path1, const char * path2) 
+void renameFile(const char * path1, const char * path2)
 {
-  Serial.print("Renaming file: "); Serial.print(path1);
-  Serial.print(" to: "); Serial.print(path2);
-  
-  if (rename(path1, path2) == 0) 
+  Serial.print("Renaming file: ");
+  Serial.print(path1);
+  Serial.print(" to: ");
+  Serial.print(path2);
+
+  if (rename(path1, path2) == 0)
   {
     Serial.println(" => OK");
   }
@@ -177,17 +184,18 @@ void renameFile(const char * path1, const char * path2)
   }
 }
 
-void testFileIO(const char * path) 
+void testFileIO(const char * path)
 {
-  Serial.print("Testing file I/O with: "); Serial.print(path);
+  Serial.print("Testing file I/O with: ");
+  Serial.print(path);
 
-  #define BUFF_SIZE     512
-  
+#define BUFF_SIZE     512
+
   static uint8_t buf[BUFF_SIZE];
-  
+
   FILE *file = fopen(path, "w");
-  
-  if (file) 
+
+  if (file)
   {
     Serial.println(" => Open OK");
   }
@@ -199,32 +207,34 @@ void testFileIO(const char * path)
 
   size_t i;
   Serial.println("- writing" );
-  
+
   uint32_t start = millis();
 
   size_t result = 0;
 
   // Write a file only 1/4 of NANO33BLE_FS_SIZE_KB
-  for (i = 0; i < NANO33BLE_FS_SIZE_KB / 2; i++) 
+  for (i = 0; i < NANO33BLE_FS_SIZE_KB / 2; i++)
   {
     result = fwrite(buf, BUFF_SIZE, 1, file);
 
     if ( result != 1)
     {
-      Serial.print("Write result = "); Serial.println(result);
-      Serial.print("Write error, i = "); Serial.println(i);
+      Serial.print("Write result = ");
+      Serial.println(result);
+      Serial.print("Write error, i = ");
+      Serial.println(i);
 
       break;
     }
   }
-  
+
   Serial.println("");
   uint32_t end = millis() - start;
-  
+
   Serial.print(i / 2);
   Serial.print(" Kbytes written in (ms) ");
   Serial.println(end);
-  
+
   fclose(file);
 
   printLine();
@@ -232,12 +242,12 @@ void testFileIO(const char * path)
   /////////////////////////////////
 
   file = fopen(path, "r");
-  
+
   start = millis();
   end = start;
   i = 0;
-  
-  if (file) 
+
+  if (file)
   {
     start = millis();
     Serial.println("- reading" );
@@ -247,29 +257,31 @@ void testFileIO(const char * path)
     fseek(file, 0, SEEK_SET);
 
     // Read file only 1/4 of NANO33BLE_FS_SIZE_KB
-    for (i = 0; i < NANO33BLE_FS_SIZE_KB / 2; i++) 
+    for (i = 0; i < NANO33BLE_FS_SIZE_KB / 2; i++)
     {
       result = fread(buf, BUFF_SIZE, 1, file);
 
       if ( result != 1 )
       {
-        Serial.print("Read result = "); Serial.println(result);
-        Serial.print("Read error, i = "); Serial.println(i);
+        Serial.print("Read result = ");
+        Serial.println(result);
+        Serial.print("Read error, i = ");
+        Serial.println(i);
 
         break;
       }
     }
-      
+
     Serial.println("");
     end = millis() - start;
-    
+
     Serial.print((i * BUFF_SIZE) / 1024);
     Serial.print(" Kbytes read in (ms) ");
     Serial.println(end);
-    
+
     fclose(file);
-  } 
-  else 
+  }
+  else
   {
     Serial.println("- failed to open file for reading");
   }
@@ -280,41 +292,47 @@ void printLine()
   Serial.println("****************************************************");
 }
 
-void setup() 
+void setup()
 {
   Serial.begin(115200);
-  while (!Serial)
+
+  while (!Serial && millis() < 5000);
 
   delay(1000);
 
-  Serial.print("\nStart FS_Test on "); Serial.println(BOARD_NAME);
+  Serial.print("\nStart FS_Test on ");
+  Serial.println(BOARD_NAME);
   Serial.println(FS_NANO33BLE_VERSION);
 
 #if defined(FS_NANO33BLE_VERSION_MIN)
+
   if (FS_NANO33BLE_VERSION_INT < FS_NANO33BLE_VERSION_MIN)
   {
     Serial.print("Warning. Must use this example on Version equal or later than : ");
     Serial.println(FS_NANO33BLE_VERSION_MIN_TARGET);
   }
+
 #endif
 
-  Serial.print("FS_size (KB) = "); Serial.println(NANO33BLE_FS_SIZE_KB);
-  Serial.print("FS_ Start Address = 0x"); Serial.println(NANO33BLE_FS_START, HEX);
+  Serial.print("FS_size (KB) = ");
+  Serial.println(NANO33BLE_FS_SIZE_KB);
+  Serial.print("FS_ Start Address = 0x");
+  Serial.println(NANO33BLE_FS_START, HEX);
 
   myFS = new FileSystem_MBED();
 
   if (!myFS->init())
   {
     Serial.println("FS Mount Failed");
-    
+
     return;
   }
 
   char fileName1[] = MBED_FS_FILE_PREFIX "/hello1.txt";
   char fileName2[] = MBED_FS_FILE_PREFIX "/hello2.txt";
-  
+
   char message[]  = "Hello from Nano_33_BLE\n";
-   
+
   printLine();
   writeFile(fileName1, message, sizeof(message));
   printLine();
@@ -348,6 +366,6 @@ void setup()
   Serial.println( "\nTest complete" );
 }
 
-void loop() 
+void loop()
 {
 }
