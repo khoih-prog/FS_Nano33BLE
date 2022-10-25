@@ -62,6 +62,7 @@ The filesystem access uses normal [POSIX APIs](https://www.tutorialspoint.com/c_
 ### Currently supported Boards
 
 1. **MBED nRF52840-based boards such as Nano_33_BLE, Nano_33_BLE_Sense**, etc. using [**Arduino-mbed mbed_nano** core](https://github.com/arduino/ArduinoCore-mbed)
+2. **Seeeduino nRF52840-based boards such as SEEED_XIAO_NRF52840 and SEEED_XIAO_NRF52840_SENSE**, etc. using Seeeduino `mbed` core
 
 ---
 ---
@@ -69,7 +70,8 @@ The filesystem access uses normal [POSIX APIs](https://www.tutorialspoint.com/c_
 ## Prerequisites
 
 1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
-2. [`Arduino mbed_nano core 2.7.2+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) MBED nRF52840-based boards such as **Nano_33_BLE, Nano_33_BLE_Sense**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+2. [`Arduino mbed_nano core 3.4.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) MBED nRF52840-based boards such as **Nano_33_BLE, Nano_33_BLE_Sense**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+3. `Seeeduino mbed core 2.7.2+` for Seeeduino nRF52840-based boards such as **SEEED_XIAO_NRF52840 and SEEED_XIAO_NRF52840_SENSE**
 
 ---
 ---
@@ -112,350 +114,10 @@ Another way to install is to:
 
 ### Example [FS_Test](examples/FS_Test)
 
-```
-#define FS_NANO33BLE_VERSION_MIN_TARGET      "FS_Nano33BLE v1.2.0"
-#define FS_NANO33BLE_VERSION_MIN             1002000
 
-#define _FS_LOGLEVEL_               1
+https://github.com/khoih-prog/FS_Nano33BLE/blob/141121ee1552ddf249d09c297f5d49a838e2624e/examples/FS_Test/FS_Test.ino#L1-L371
 
-// Min NANO33BLE_FS_SIZE_KB must be  64KB. If defined smalller => auto adjust to  64KB
-// Max NANO33BLE_FS_SIZE_KB must be 512KB. If defined larger   => auto adjust to 512KB
-#define NANO33BLE_FS_SIZE_KB        64
 
-#define FORCE_REFORMAT              false
-
-// Default USING_LITTLEFS. Uncomment to not USING_LITTLEFS => USING_FATFS. 
-//#define USING_LITTLEFS              false
-
-#include <FS_Nano33BLE.h>
-
-FileSystem_MBED *myFS;
-
-void readCharsFromFile(const char * path) 
-{
-  Serial.print("readCharsFromFile: "); Serial.print(path);
-
-  FILE *file = fopen(path, "r");
-  
-  if (file) 
-  {
-    Serial.println(" => Open OK");
-  }
-  else
-  {
-    Serial.println(" => Open Failed");
-    return;
-  }
-
-  char c;
-
-  while (true) 
-  {
-    c = fgetc(file);
-    
-    if ( feof(file) ) 
-    { 
-      break;
-    }
-    else   
-      Serial.print(c);
-  }
-   
-  fclose(file);
-}
-
-void readFile(const char * path) 
-{
-  Serial.print("Reading file: "); Serial.print(path);
-
-  FILE *file = fopen(path, "r");
-  
-  if (file) 
-  {
-    Serial.println(" => Open OK");
-  }
-  else
-  {
-    Serial.println(" => Open Failed");
-    return;
-  }
-
-  char c;
-  uint32_t numRead = 1;
-  
-  while (numRead) 
-  {
-    numRead = fread((uint8_t *) &c, sizeof(c), 1, file);
-
-    if (numRead)
-      Serial.print(c);
-  }
-  
-  fclose(file);
-}
-
-void writeFile(const char * path, const char * message, size_t messageSize) 
-{
-  Serial.print("Writing file: "); Serial.print(path);
-
-  FILE *file = fopen(path, "w");
-  
-  if (file) 
-  {
-    Serial.println(" => Open OK");
-  }
-  else
-  {
-    Serial.println(" => Open Failed");
-    return;
-  }
- 
-  if (fwrite((uint8_t *) message, 1, messageSize, file)) 
-  {
-    Serial.println("* Writing OK");
-  } 
-  else 
-  {
-    Serial.println("* Writing failed");
-  }
-  
-  fclose(file);
-}
-
-void appendFile(const char * path, const char * message, size_t messageSize) 
-{
-  Serial.print("Appending file: "); Serial.print(path);
-
-  FILE *file = fopen(path, "a");
-  
-  if (file) 
-  {
-    Serial.println(" => Open OK");
-  }
-  else
-  {
-    Serial.println(" => Open Failed");
-    return;
-  }
-
-  if (fwrite((uint8_t *) message, 1, messageSize, file)) 
-  {
-    Serial.println("* Appending OK");
-  } 
-  else 
-  {
-    Serial.println("* Appending failed");
-  }
-   
-  fclose(file);
-}
-
-void deleteFile(const char * path) 
-{
-  Serial.print("Deleting file: "); Serial.print(path);
-  
-  if (remove(path) == 0) 
-  {
-    Serial.println(" => OK");
-  }
-  else
-  {
-    Serial.println(" => Failed");
-    return;
-  }
-}
-
-void renameFile(const char * path1, const char * path2) 
-{
-  Serial.print("Renaming file: "); Serial.print(path1);
-  Serial.print(" to: "); Serial.print(path2);
-  
-  if (rename(path1, path2) == 0) 
-  {
-    Serial.println(" => OK");
-  }
-  else
-  {
-    Serial.println(" => Failed");
-    return;
-  }
-}
-
-void testFileIO(const char * path) 
-{
-  Serial.print("Testing file I/O with: "); Serial.print(path);
-
-  #define BUFF_SIZE     512
-  
-  static uint8_t buf[BUFF_SIZE];
-  
-  FILE *file = fopen(path, "w");
-  
-  if (file) 
-  {
-    Serial.println(" => Open OK");
-  }
-  else
-  {
-    Serial.println(" => Open Failed");
-    return;
-  }
-
-  size_t i;
-  Serial.println("- writing" );
-  
-  uint32_t start = millis();
-
-  size_t result = 0;
-
-  // Write a file only 1/4 of NANO33BLE_FS_SIZE_KB
-  for (i = 0; i < NANO33BLE_FS_SIZE_KB / 2; i++) 
-  {
-    result = fwrite(buf, BUFF_SIZE, 1, file);
-
-    if ( result != 1)
-    {
-      Serial.print("Write result = "); Serial.println(result);
-      Serial.print("Write error, i = "); Serial.println(i);
-
-      break;
-    }
-  }
-  
-  Serial.println("");
-  uint32_t end = millis() - start;
-  
-  Serial.print(i / 2);
-  Serial.print(" Kbytes written in (ms) ");
-  Serial.println(end);
-  
-  fclose(file);
-
-  printLine();
-
-  /////////////////////////////////
-
-  file = fopen(path, "r");
-  
-  start = millis();
-  end = start;
-  i = 0;
-  
-  if (file) 
-  {
-    start = millis();
-    Serial.println("- reading" );
-
-    result = 0;
-
-    fseek(file, 0, SEEK_SET);
-
-    // Read file only 1/4 of NANO33BLE_FS_SIZE_KB
-    for (i = 0; i < NANO33BLE_FS_SIZE_KB / 2; i++) 
-    {
-      result = fread(buf, BUFF_SIZE, 1, file);
-
-      if ( result != 1 )
-      {
-        Serial.print("Read result = "); Serial.println(result);
-        Serial.print("Read error, i = "); Serial.println(i);
-
-        break;
-      }
-    }
-      
-    Serial.println("");
-    end = millis() - start;
-    
-    Serial.print((i * BUFF_SIZE) / 1024);
-    Serial.print(" Kbytes read in (ms) ");
-    Serial.println(end);
-    
-    fclose(file);
-  } 
-  else 
-  {
-    Serial.println("- failed to open file for reading");
-  }
-}
-
-void printLine()
-{
-  Serial.println("****************************************************");
-}
-
-void setup() 
-{
-  Serial.begin(115200);
-  while (!Serial)
-
-  delay(1000);
-
-  Serial.print("\nStart FS_Test on "); Serial.println(BOARD_NAME);
-  Serial.println(FS_NANO33BLE_VERSION);
-
-#if defined(FS_NANO33BLE_VERSION_MIN)
-  if (FS_NANO33BLE_VERSION_INT < FS_NANO33BLE_VERSION_MIN)
-  {
-    Serial.print("Warning. Must use this example on Version equal or later than : ");
-    Serial.println(FS_NANO33BLE_VERSION_MIN_TARGET);
-  }
-#endif
-
-  Serial.print("FS_size (KB) = "); Serial.println(NANO33BLE_FS_SIZE_KB);
-  Serial.print("FS_ Start Address = 0x"); Serial.println(NANO33BLE_FS_START, HEX);
-
-  myFS = new FileSystem_MBED();
-
-  if (!myFS->init())
-  {
-    Serial.println("FS Mount Failed");
-    
-    return;
-  }
-
-  char fileName1[] = MBED_FS_FILE_PREFIX "/hello1.txt";
-  char fileName2[] = MBED_FS_FILE_PREFIX "/hello2.txt";
-  
-  char message[]  = "Hello from Nano_33_BLE\n";
-   
-  printLine();
-  writeFile(fileName1, message, sizeof(message));
-  printLine();
-  readFile(fileName1);
-  printLine();
-
-  appendFile(fileName1, message, sizeof(message));
-  printLine();
-  readFile(fileName1);
-  printLine();
-
-  renameFile(fileName1, fileName2);
-  printLine();
-  readCharsFromFile(fileName2);
-  printLine();
-
-  deleteFile(fileName2);
-  printLine();
-  readFile(fileName2);
-  printLine();
-
-  testFileIO(fileName1);
-  printLine();
-  testFileIO(fileName2);
-  printLine();
-  deleteFile(fileName1);
-  printLine();
-  deleteFile(fileName2);
-  printLine();
-
-  Serial.println( "\nTest complete" );
-}
-
-void loop() 
-{
-}
-```
 ---
 ---
 
@@ -467,7 +129,7 @@ The following is the sample terminal output when running example [FS_Counting](e
 
 ```
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.2.0
+LittleFS_Nano33BLE v1.2.1
 FS_size (KB) = 256
 FS_ Start Address = 0xC0000
 [FS] LittleFS size (KB) = 256
@@ -477,7 +139,7 @@ Times have been run = 1
  => Open to write OK
 
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.2.0
+LittleFS_Nano33BLE v1.2.1
 [LFS] LittleFS size (KB) = 256
 [LFS] LittleFS Mount OK
  => Open to read OK
@@ -485,7 +147,7 @@ Times have been run = 2
  => Open to write OK
 
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.2.0
+LittleFS_Nano33BLE v1.2.1
 [LFS] LittleFS size (KB) = 256
 [LFS] LittleFS Mount OK
  => Open to read OK
@@ -502,7 +164,7 @@ The following is the sample terminal output when running example [FS_Test](examp
 
 ```
 Start FS_Test on Nano 33 BLE
-LittleFS_Nano33BLE v1.2.0
+LittleFS_Nano33BLE v1.2.1
 FS_size (KB) = 256
 FS_ Start Address = 0xC0000
 [FS] LittleFS size (KB) = 256
@@ -570,7 +232,7 @@ The following is the sample terminal output when running example [FS_Test](examp
 
 ```
 Start FS_Test on Nano 33 BLE
-FATFS_Nano33BLE v1.2.0
+FATFS_Nano33BLE v1.2.1
 FS_size (KB) = 512
 FS_ Start Address = 0x80000
 [FS] LittleFS size (KB) = 512
@@ -675,7 +337,9 @@ Submit issues to: [FS_Nano33BLE issues](https://github.com/khoih-prog/FS_Nano33B
 3. Add Table of Contents
 4. Fix `multiple-definitions` linker error
 5. Use correct `NANO33BLE_FS_START` address for `LittleFS` without wasting flash space. Check [Half size of flash #2](https://github.com/khoih-prog/FS_Nano33BLE/discussions/2)
-
+6. Add support to Seeeduino nRF52840-based boards such as **SEEED_XIAO_NRF52840 and SEEED_XIAO_NRF52840_SENSE**, etc. using Seeeduino `mbed` core
+7. Add astyle using `allman` style. Restyle the library
+8. Display compile warning only when `_FS_LOGLEVEL_ > 3`
 
 ---
 ---
