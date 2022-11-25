@@ -119,7 +119,7 @@ Another way to install is to:
 ### Example [FS_Test](examples/FS_Test)
 
 
-https://github.com/khoih-prog/FS_Nano33BLE/blob/141121ee1552ddf249d09c297f5d49a838e2624e/examples/FS_Test/FS_Test.ino#L1-L371
+https://github.com/khoih-prog/FS_Nano33BLE/blob/ac168d3003a8564ea0eb7a2e1ca7f4005f6f0f8f/examples/FS_Test/FS_Test.ino#L11-L371
 
 
 ---
