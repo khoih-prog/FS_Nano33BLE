@@ -6,7 +6,11 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/FS_Nano33BLE.svg)](http://github.com/khoih-prog/FS_Nano33BLE/issues)
 
-<a href="https://www.buymeacoffee.com/khoihprog6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 181px !important;" ></a>
+
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
+<a href="https://profile-counter.glitch.me/khoih-prog/count.svg" title="Total khoih-prog Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog/count.svg" style="height: 30px;width: 200px;"></a>
+<a href="https://profile-counter.glitch.me/khoih-prog-FS_Nano33BLE/count.svg" title="FS_Nano33BLE Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog-FS_Nano33BLE/count.svg" style="height: 30px;width: 200px;"></a>
 
 ---
 ---
@@ -48,12 +52,12 @@
 
 ## Important Notes
 
-Avoid using FATFS because the somehow (issue with the core ???) it's OK to use only with 512KB. Please use the better LittleFS, where you can select the size anywhere from 64KB to 512KB.
+Avoid using `FATFS` because the somehow (issue with the core ???) it's OK to use only with `512KB`. Please use the better `LittleFS`, where you can select the size anywhere from 64KB to 512KB.
 
 
 ## Features
 
-This library is just a simple LittleFS wrapper to facilitate your usage of LittleFS for the onboard flash on **MBED nRF52840-based boards such as Nano_33_BLE, Nano_33_BLE_Sense**, using [**Arduino-mbed mbed_nano** core](https://github.com/arduino/ArduinoCore-mbed)
+This library is just a simple `LittleFS` wrapper to facilitate your usage of `LittleFS` for the onboard flash on **MBED nRF52840-based boards such as Nano_33_BLE, Nano_33_BLE_Sense**, using [**Arduino-mbed mbed_nano** core](https://github.com/arduino/ArduinoCore-mbed)
 
 The filesystem access uses normal [POSIX APIs](https://www.tutorialspoint.com/c_standard_library/stdio_h.htm) or [mbed FileSystem APIs](https://os.mbed.com/docs/mbed-os/v6.10/apis/file-system-apis.html)
 
@@ -96,7 +100,7 @@ Another way to install is to:
 
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install [**FS_Nano33BLE** library](https://platformio.org/lib/show/12751/FS_Nano33BLE) by using [Library Manager](https://platformio.org/lib/show/12751/FS_Nano33BLE/installation). Search for **FS_Nano33BLE** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install [**FS_Nano33BLE** library](https://registry.platformio.org/libraries/khoih-prog/FS_Nano33BLE) by using [Library Manager](https://registry.platformio.org/libraries/khoih-prog/FS_Nano33BLE/installation). Search for **FS_Nano33BLE** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 
@@ -127,7 +131,7 @@ https://github.com/khoih-prog/FS_Nano33BLE/blob/141121ee1552ddf249d09c297f5d49a8
 
 The following is the sample terminal output when running example [FS_Counting](examples/FS_Counting) on MBED Nano_33_BLE using **LittleFS**
 
-```
+```cpp
 Start FS_Test on Nano 33 BLE
 LittleFS_Nano33BLE v1.2.1
 FS_size (KB) = 256
@@ -162,7 +166,7 @@ Times have been run = 3
 The following is the sample terminal output when running example [FS_Test](examples/FS_Test) on MBED Nano_33_BLE using **LittleFS**
 
 
-```
+```cpp
 Start FS_Test on Nano 33 BLE
 LittleFS_Nano33BLE v1.2.1
 FS_size (KB) = 256
@@ -220,7 +224,6 @@ Deleting file: /fs/hello2.txt => OK
 ====================================================
 
 Test complete
-
 ```
 
 ---
@@ -230,7 +233,7 @@ Test complete
 The following is the sample terminal output when running example [FS_Test](examples/FS_Test) on MBED Nano_33_BLE using **FATFS**
 
 
-```
+```cpp
 Start FS_Test on Nano 33 BLE
 FATFS_Nano33BLE v1.2.1
 FS_size (KB) = 512
@@ -340,6 +343,8 @@ Submit issues to: [FS_Nano33BLE issues](https://github.com/khoih-prog/FS_Nano33B
 6. Add support to Seeeduino nRF52840-based boards such as **SEEED_XIAO_NRF52840 and SEEED_XIAO_NRF52840_SENSE**, etc. using Seeeduino `mbed` core
 7. Add astyle using `allman` style. Restyle the library
 8. Display compile warning only when `_FS_LOGLEVEL_ > 3`
+9. Add astyle using `allman` style. Restyle the library
+
 
 ---
 ---
@@ -378,6 +383,6 @@ If you want to contribute to this project:
 
 ## Copyright
 
-Copyright 2021- Khoi Hoang
+Copyright (c) 2021- Khoi Hoang
 
 
