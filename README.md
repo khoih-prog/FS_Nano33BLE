@@ -343,7 +343,6 @@ Submit issues to: [FS_Nano33BLE issues](https://github.com/khoih-prog/FS_Nano33B
 6. Add support to Seeeduino nRF52840-based boards such as **SEEED_XIAO_NRF52840 and SEEED_XIAO_NRF52840_SENSE**, etc. using Seeeduino `mbed` core
 7. Add astyle using `allman` style. Restyle the library
 8. Display compile warning only when `_FS_LOGLEVEL_ > 3`
-9. Add astyle using `allman` style. Restyle the library
 
 
 ---
